@@ -5,8 +5,11 @@ pipeline {
     }
     stages {
         stage ("Testing the code") {
-            script {
+            steps{
+                script {
                 git branch: 'main', credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git'
+                }
+
             }
         }
         stage("build the docker image"){
