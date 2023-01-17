@@ -10,13 +10,15 @@ pipeline {
             }
         }
         stage("build the docker image"){
-            environment {
-                docker_repo = vilayilarun/max
-                script {
-                    customImage = docker.build("${env.docker_repo}:${env.BUILD_ID}")
-                    customImage.push()
+            steps{
+                 environment {
+                    docker_repo = "vilayilarun/max"
+                    script {
+                        customImage = docker.build("${env.docker_repo}:${env.BUILD_ID}")
+                        customImage.push()
                 }
-            }
+            }                
         }
     }
+}
 }
