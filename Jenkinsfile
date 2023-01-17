@@ -11,14 +11,13 @@ pipeline {
         }
         stage("build the docker image"){
             steps{
-                 environment {
-                    docker_repo = "vilayilarun/max"
+                 withEnv(['docker_rep=vilayilarun/max']) {
                     script {
-                        customImage = docker.build("${env.docker_repo}:${env.BUILD_ID}")
+                        customImage = docker.build("${docker_repo}:${env.BUILD_ID}")
                         customImage.push()
+                    }
                 }
-            }                
+            }
         }
     }
-}
 }
