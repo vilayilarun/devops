@@ -19,7 +19,7 @@ pipeline {
                     }
                 }
             }
-        stage("Push the builded docker image ${customImage}"){
+        stage("Push the builded docker image "){
             steps{
                 script{
                     docker.withRegistry(' ','dockerhub' ){
