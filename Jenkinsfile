@@ -10,11 +10,17 @@ pipeline {
             }
         }
         stage("build the docker image"){
-            withEnv(['docker_rep=vilayilarun/max']) {
                 steps{
                     script {
-                        customImage = docker.build("${docker_repo}:${env.BUILD_ID}")
-                        customImage.push()
+                        customImage = docker.build("vilayilarun/max:${env.BUILD_ID}")
+                    }
+                }
+            }
+        stage("Push the builded docker image ${customImage}"){
+            steps{
+                script{
+                    docker.withRegistry(' ','dockerhub' ){
+                        customeImage.push();
                     }
                 }
             }
