@@ -22,7 +22,7 @@ pipeline {
         stage("Push the builded docker image "){
             steps{
                 script{
-                    docker.withRegistry(' ','docker-hub' ){
+                    docker.withRegistry('','docker-hub' ){
                         customeImage.push();
                     }
                 }
