@@ -23,7 +23,7 @@ pipeline {
             steps{
                 script{
                     docker.withRegistry('','docker-hub' ){
-                        customeImage.push();
+                        customImage.push();
                     }
                 }
             }
