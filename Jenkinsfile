@@ -15,7 +15,7 @@ pipeline {
         stage("build the docker image"){
                 steps{
                     script {
-                        customImage = docker.build("vilayilarun/max:${env.BUILD_ID}")
+                        customImage = docker.build("vilayilarun/max:helloworld-python-${env.BUILD_ID}")
                     }
                 }
             }
