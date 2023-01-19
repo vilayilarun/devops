@@ -44,10 +44,14 @@ pipeline {
         }
         stage('Terraform Apply') {
             steps {
-                input message: 'Do you want to continue with terraform apply?', ok: 'Yes',
-                parameters: [string(defaultValue: 'No', description: '', name: 'confirmation')]
-                if (params.confirmation == 'Yes') {
-                    sh 'terraform apply -auto-approve tfplan'
+                sh 'terraform apply -auto-approve tfplan'
+                script {
+                    def cluster_status = sh(returnStatus: true, script: 'terraform output cluster_status')
+                    if (cluster_status == 0) {
+                        slackSend color: 'good', message: 'Cluster creation completed successfully!'
+                    } else {
+                        slackSend color: 'danger', message: 'Cluster creation failed. Check the logs for more details.'
+                    }
                 }
             }
         }
@@ -69,5 +73,10 @@ pipeline {
                 sh "aws eks --region ${region_name} update-kubeconfig --name ${cluster_name}"
             }
         }        
+    }
+    post {
+        always {
+            slackSend color: '#FFFF00', message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' completed. Check the logs for more details."
+        }
     }
 }
