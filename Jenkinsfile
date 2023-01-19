@@ -58,7 +58,7 @@ pipeline {
         stage('Read tfvars file') {
             steps {
                 script {
-                    def tfvars = readFile 'path/to/your/variables.tfvars'
+                    def tfvars = readFile './production.tfvars'
                     def cluster_name = /cluster_name = "(.*)"/.exec(tfvars)[1]
                     def region_name = /region = "(.*)"/.exec(tfvars)[1]
                 }
