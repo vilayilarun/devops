@@ -55,15 +55,6 @@ pipeline {
                 }
             }
         }
-        stage('Read tfvars file') {
-            steps {
-                script {
-                    def tfvars = readFile './production.tfvars'
-                    def cluster_name = /cluster_name = "(.*)"/.exec(tfvars)[1]
-                    def region_name = /region = "(.*)"/.exec(tfvars)[1]
-                }
-            }
-        }
         stage("Update image tags") {
             steps {
                 script {
@@ -77,7 +68,16 @@ pipeline {
                     writeYaml file: "path/to/values.yaml", data: values
                 }
             }
-        }        
+        }
+        stage('Read tfvars file') {
+            steps {
+                script {
+                    def tfvars = readFile './production.tfvars'
+                    def cluster_name = /cluster_name = "(.*)"/.exec(tfvars)[1]
+                    def region_name = /region = "(.*)"/.exec(tfvars)[1]
+                }
+            }
+        }       
         stage('Connect to K8s') {
             steps {
                 withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
