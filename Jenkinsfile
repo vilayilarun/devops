@@ -67,15 +67,14 @@ pipeline {
         stage("Update image tags") {
             steps {
                 script {
-                    def valuesYaml = readFile("path/to/values.yaml")
-                    def values = new yaml().load(valuesYaml)
+                    def values = readYaml file: "path/to/values.yaml"
                     for (image in values.images) {
                         def tag = image.tag
                         sh "docker pull ${image.name}:${tag}"
-                        sh "docker tag ${image.name}:${tag} ${image.name}:${env.BUILD_NUMBER}"
-                        image.tag = "${env.BUILD_NUMBER}"
+                        sh "docker tag ${image.name}:${tag} ${image.name}:new_tag"
+                        image.tag = "new_tag"
                     }
-                    writeFile file: "path/to/values.yaml", text: yaml.dump(values)
+                    writeYaml file: "path/to/values.yaml", data: values
                 }
             }
         }        
