@@ -48,9 +48,9 @@ pipeline {
                 script {
                     def cluster_status = sh(returnStatus: true, script: 'terraform output cluster_status')
                     if (cluster_status == 0) {
-                        slackSend (color: 'good', message: 'Cluster creation completed successfully!', channel: '#Jenkins-build', tokenCredentialId: 'slack-token')
+                        slackSend (color: 'good', message: 'Cluster creation completed successfully!', channel: '#devops', tokenCredentialId: 'slacktoken')
                     } else {
-                        slackSend (color: 'danger', message: 'Cluster creation failed. Check the logs for more details.', channel: '#Jenkins-build', tokenCredentialId: 'slack-token')
+                        slackSend (color: 'danger', message: 'Cluster creation failed. Check the logs for more details.', channel: '#devops', tokenCredentialId: 'slacktoken')
                     }
                 }
             }
@@ -76,7 +76,7 @@ pipeline {
     }
     post {
         always {
-            slackSend (color: '#FFFF00', message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' completed. Check the logs for more details.", channel: '#Jenkins-build', tokenCredentialId: 'slack-token')
+            slackSend (color: '#FFFF00', message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' completed. Check the logs for more details.", channel: '#devops', tokenCredentialId: 'slacktoken')
         }
     }
 }
