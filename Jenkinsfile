@@ -31,8 +31,8 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
-                    sh "aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)"
-                    sh "aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)"
+                    sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
+                    sh 'aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)'
                 }
                 sh 'terraform init'
             }
@@ -67,8 +67,8 @@ pipeline {
         stage('Connect to K8s') {
             steps {
                 withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
-                    sh "aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)"
-                    sh "aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)"
+                    sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
+                    sh 'aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)'
                 }
                 sh "aws eks --region ${region_name} update-kubeconfig --name ${cluster_name}"
             }
