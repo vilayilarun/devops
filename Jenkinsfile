@@ -64,6 +64,21 @@ pipeline {
                 }
             }
         }
+        stage("Update image tags") {
+            steps {
+                script {
+                    def valuesYaml = readFile("path/to/values.yaml")
+                    def values = new yaml().load(valuesYaml)
+                    for (image in values.images) {
+                        def tag = image.tag
+                        sh "docker pull ${image.name}:${tag}"
+                        sh "docker tag ${image.name}:${tag} ${image.name}:${env.BUILD_NUMBER}"
+                        image.tag = "${env.BUILD_NUMBER}"
+                    }
+                    writeFile file: "path/to/values.yaml", text: yaml.dump(values)
+                }
+            }
+        }        
         stage('Connect to K8s') {
             steps {
                 withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
