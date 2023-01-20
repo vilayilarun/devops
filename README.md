@@ -1,6 +1,6 @@
 ## Architecture
 
-![Infrastructure Architecture](./arcg.jpg)
+![Infrastructure Architecture](./arch.jpg)
 
 ## Prerequisites
 - A [AWS](https://aws.amazon.com/) account with a [IAM USER](https://aws.amazon.com/iam/)
