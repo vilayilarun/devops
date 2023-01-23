@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'maven'
-        terraform 'terraform'
+        terraform 'terraform',type: 'terraform'
     }
     stages {
         stage ("Testing the code") {
