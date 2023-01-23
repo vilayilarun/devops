@@ -30,7 +30,7 @@ pipeline {
             }
         }
         stage('Terraform Init') {
-            steps 
+            steps {
                 dir("./terrafrom") {
                 withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
                     sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
@@ -39,14 +39,16 @@ pipeline {
                 sh "${tool 'terraform'} init"
             }
         }
+        }
         stage('Terraform Plan') {
-            steps 
+            steps {
                 dir("./terrafrom") {
                 sh "${tool 'terraform'} plan -var-file=production.tfvars -out=tfplan"
             }
         }
+        }
         stage('Terraform Apply') {
-            steps 
+            steps {
                 dir("./terrafrom") {
                 sh "${tool 'terraform'} apply -auto-approve tfplan"
                 script {
@@ -58,6 +60,7 @@ pipeline {
                     }
                 }
             }
+        }
         }
         stage("Update image tags") {
             steps {
