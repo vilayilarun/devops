@@ -11,6 +11,7 @@
 - A  Jenkins Server is ready and runing.
 - Install terraform and AWS CLI on your Jenkins server
 - Install Helm on the Jenkins server whcih is used to deploy the container to the cluster.
+-  A Terraform tfvars file is required with name production.tfvars
 ## Overview
 - This is a sample CI/CD project where we are going to deploy an python application the EKS cluetr. 
 - The entier process is automated. This will create a docker image and push the image to dockerhub. 
