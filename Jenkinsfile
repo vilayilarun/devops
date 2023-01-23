@@ -29,7 +29,8 @@ pipeline {
             }
         }
         stage('Terraform Init') {
-            steps {
+            steps 
+                dir("./terrafrom") {
                 withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
                     sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
                     sh 'aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)'
@@ -38,12 +39,14 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
-            steps {
+            steps 
+                dir("./terrafrom") {
                 sh 'terraform plan -var-file=variables.tfvars -out=tfplan'
             }
         }
         stage('Terraform Apply') {
-            steps {
+            steps 
+                dir("./terrafrom") {
                 sh 'terraform apply -auto-approve tfplan'
                 script {
                     def cluster_status = sh(returnStatus: true, script: 'terraform output cluster_status')
