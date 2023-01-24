@@ -37,7 +37,12 @@ pipeline {
                     values.image.tag = imageTag
                     writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
                     dir('helloworld-python') {
-                        git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
+                        // git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
+                        git branch: 'main', credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git'
+                        sh 'git add .'
+                        sh 'git commit -m "Update from Jenkins"'
+                        sh 'git push origin main'                     
+                        // checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git']]])
                     }
                     // for (image in values.images.repository) {
                     //     def tag = imagetag
