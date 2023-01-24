@@ -25,6 +25,7 @@ pipeline {
                 script{
                     docker.withRegistry('','docker-hub' ){
                         customImage.push();
+                    def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" myimage').trim()
                     }
                 }
             }
@@ -32,14 +33,19 @@ pipeline {
         stage("Update image tags") {
             steps {
                 script {
-                    def values = readYaml file: "./helloworld-python/values.yaml"
-                    for (image in values.images) {
-                        def tag = image.tag
-                        sh "docker pull ${image.name}:${tag}"
-                        sh "docker tag ${image.name}:${tag} ${image.name}:new_tag"
-                        image.tag = "new_tag"
+                    def values = readYaml file: "helloworld-python/values.yaml"
+                    values.image.tag = imageTag
+                    writeYaml file: 'charts/mychart/values.yaml', data: values
+                    dir('helloworld-python') {
+                        git add: 'mychart/values.yaml', commit: 'Update image tag to ' + imageTag, push: true
                     }
-                    writeYaml file: "./helloworld-python/values.yaml", data: values
+                    // for (image in values.images.repository) {
+                    //     def tag = imagetag
+                    //     sh "docker pull ${image.name}:${tag}"
+                    //     sh "docker tag ${image.name}:${tag} ${image.name}:new_tag"
+                    //     image.tag = "new_tag"
+                    // }
+                    // writeYaml file: "./helloworld-python/values.yaml", data: values
                 }
             }
         }
