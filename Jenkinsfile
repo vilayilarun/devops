@@ -25,7 +25,6 @@ pipeline {
                 script{
                     docker.withRegistry('','docker-hub' ){
                         customImage.push();
-                    def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     }
                 }
             }
@@ -33,6 +32,7 @@ pipeline {
         stage("Update image tags") {
             steps {
                 script {
+                    def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     def values = readYaml file: "helloworld-python/values.yaml"
                     values.image.tag = imageTag
                     writeYaml file: 'charts/mychart/values.yaml', data: values
