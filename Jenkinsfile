@@ -25,7 +25,7 @@ pipeline {
                 script{
                     docker.withRegistry('','docker-hub' ){
                         customImage.push();
-                    def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" myimage').trim()
+                    def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     }
                 }
             }
