@@ -35,7 +35,7 @@ pipeline {
                     def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     def values = readYaml file: "helloworld-python/values.yaml"
                     values.image.tag = imageTag
-                    writeYaml file: 'helloworld-python/values.yaml', data: values
+                    writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
                     dir('helloworld-python') {
                         git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
                     }
