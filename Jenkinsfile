@@ -3,6 +3,7 @@ pipeline {
     tools {
         maven 'maven'
         terraform 'terraform'
+        git 'git'
     }
     stages {
         stage ("Testing the code") {
@@ -32,35 +33,16 @@ pipeline {
         stage("Update image tags") {
             steps { 
                  script {
+                    def repo = "https://github.com/vilayilarun/azure-devops.git"
                     def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     def values = readYaml file: "helloworld-python/values.yaml"
                     values.image.tag = imageTag
                     writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
-                    dir('helloworld-python') {
-                        // checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, xtensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git']]])
-                        git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
-                        // git branch: 'main', credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git'
-                        // sh 'git remote set-url origin https://${USER}:${PWD}@github.com/vilayilarun/azure-devops.git'
-                        // sh 'git config --global user.email "jenkins@example.com"'
-                        // sh 'git config --global user.name "Your Name"'
-                        // sh 'git add .'
-                        // sh 'git add .'
-                        // Commit changes
-                        // sh 'git commit -m "Update build"'
-                        // Push changes to GitHub
-                        // git credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git', branch: 'main', add: '.', commit: 'Update build', push: true
-                        // sh 'git commit -m "Update from Jenkins"'
-                        // sh 'git push origin main'                     
-                        // checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git']]])
-                    }
+                    dir('helloworld-python') { 
+                        checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: repo]]])
 
-                    // for (image in values.images.repository) {
-                    //     def tag = imagetag
-                    //     sh "docker pull ${image.name}:${tag}"
-                    //     sh "docker tag ${image.name}:${tag} ${image.name}:new_tag"
-                    //     image.tag = "new_tag"
-                    // }
-                    // writeYaml file: "./helloworld-python/values.yaml", data: values
+                        // git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
+                    }
                  }
             
             }
