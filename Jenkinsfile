@@ -32,19 +32,18 @@ pipeline {
         stage("Update image tags") {
             steps { 
                  script {
-                    def repo = "https://github.com/vilayilarun/azure-devops.git"
                     def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     def values = readYaml file: "helloworld-python/values.yaml"
                     values.image.tag = imageTag
                     writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
                     dir('helloworld-python') { 
-                        checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: repo]]])
-
+                        // checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: repo]]])
                         // git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
-                    }
                     sh 'git add .'
                     sh 'git commit -m "Update build"'
                     sh 'git push --force origin main'
+                    git credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git', branch: 'main', force: true
+                    }
                  }
             
             }
