@@ -36,7 +36,7 @@ pipeline {
         stage("Update image tags") {
             steps { 
                  script {
-                    def values = readYaml file: "helloworld-python/values.yaml"
+                    def valuesFile = readYaml file: "helloworld-python/values.yaml"
                     // values.image.tag = imageTag
                     def updatedValues = valuesFile.replaceAll(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
                     writeYaml file: 'helloworld-python/values.yaml', text: updatedValues, overwrite: true
