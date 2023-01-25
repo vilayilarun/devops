@@ -30,8 +30,7 @@ pipeline {
             }
         }
         stage("Update image tags") {
-            steps withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'USER', passwordVariable: 'PWD')]) {
-            {
+            steps { withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'USER', passwordVariable: 'PWD')]) {
                 script {
                     def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     def values = readYaml file: "helloworld-python/values.yaml"
@@ -57,7 +56,7 @@ pipeline {
                     // writeYaml file: "./helloworld-python/values.yaml", data: values
                 }
             }
-        }
+            }
         }
         stage('Terraform Init') {
             steps {
