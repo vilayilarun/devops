@@ -3,7 +3,6 @@ pipeline {
     tools {
         maven 'maven'
         terraform 'terraform'
-        git 'git'
     }
     stages {
         stage ("Testing the code") {
