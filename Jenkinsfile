@@ -43,6 +43,9 @@ pipeline {
 
                         // git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
                     }
+                    sh 'git add .'
+                    sh 'git commit -m "Update build"'
+                    sh 'git push --force origin main'
                  }
             
             }
