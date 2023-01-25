@@ -30,7 +30,8 @@ pipeline {
             }
         }
         stage("Update image tags") {
-            steps {
+            steps withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'USER', passwordVariable: 'PWD')]) {
+            {
                 script {
                     def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     def values = readYaml file: "helloworld-python/values.yaml"
@@ -39,6 +40,7 @@ pipeline {
                     dir('helloworld-python') {
                         // git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
                         // git branch: 'main', credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git'
+                        sh 'git remote set-url origin https://${USER}:${PWD}@github.com/vilayilarun/azure-devops.git'
                         sh 'git config --global user.email "jenkins@example.com"'
                         sh 'git config --global user.name "Your Name"'
                         sh 'git add .'
@@ -55,6 +57,7 @@ pipeline {
                     // writeYaml file: "./helloworld-python/values.yaml", data: values
                 }
             }
+        }
         }
         stage('Terraform Init') {
             steps {
