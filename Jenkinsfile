@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        imageTag = ""
+    }
     tools {
         maven 'maven'
         terraform 'terraform'
@@ -25,7 +28,7 @@ pipeline {
                 script{
                     docker.withRegistry('','docker-hub' ){
                         customImage.push();
-                    def imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
+                    imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
                     }
                 }
             }
