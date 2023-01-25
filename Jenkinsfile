@@ -39,6 +39,8 @@ pipeline {
                     dir('helloworld-python') {
                         // git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
                         git branch: 'main', credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git'
+                        sh 'git config --global user.email "jenkins@example.com"'
+                        sh 'git config --global user.name "Your Name"'
                         sh 'git add .'
                         sh 'git commit -m "Update from Jenkins"'
                         sh 'git push origin main'                     
