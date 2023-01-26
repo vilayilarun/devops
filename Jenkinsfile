@@ -39,15 +39,22 @@ pipeline {
                     def values = readYaml file: "helloworld-python/values.yaml"
                     def updated = values.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
                     writeYaml file: 'helloworld-python/values.yaml', data: updated, overwrite: true
-                    dir('helloworld-python') { 
-                        git add: 'helloworld-python/values.yaml' ,
-                        git commit: 'Update image tag to',
-                        git push: true, 
-                        git credentialsId: 'GitHub', 
-                        git url: 'https://github.com/vilayilarun/devops.git', 
-                        git branch: 'main', 
-                        git force: true
+                    withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        dir('helloworld-python') {
+                            sh "git config --global user.email '${env.GIT_USERNAME}'"
+                            sh "git config --global user.name '${env.GIT_USERNAME}'"
+                            sh 'git add helloworld-python/values.yaml'
+                            sh 'git commit -m "Update image tag to ' + imageTag + '"'
+                            sh "git push --force https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vilayilarun/devops.git main"
+                            // git add: 'helloworld-python/values.yaml' ,
+                            // git commit: 'Update image tag to',
+                            // git push: true, 
+                            // git credentialsId: 'GitHub', 
+                            // git url: 'https://github.com/vilayilarun/devops.git', 
+                            // git branch: 'main', 
+                            // git force: true
                     // git credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/devops.git', branch: 'main', force: true
+                        }
                     }
                  }
             
