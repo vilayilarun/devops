@@ -41,7 +41,7 @@ pipeline {
                     writeYaml file: 'helloworld-python/values.yaml', data: updated, overwrite: true
                     dir('helloworld-python') { 
                         git add: 'helloworld-python/values.yaml' ,
-                        git commit: 'Update image tag to ' + imageTag,
+                        git commit: 'Update image tag to',
                         git push: true, 
                         git credentialsId: 'GitHub', 
                         git url: 'https://github.com/vilayilarun/devops.git', 
