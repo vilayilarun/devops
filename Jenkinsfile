@@ -8,14 +8,6 @@ pipeline {
         terraform 'terraform'
     }
     stages {
-        // stage ("Testing the code") {
-        //     steps{
-        //         script {
-        //         git branch: 'main', credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git'
-        //         }
-
-        //     }
-        // }
         stage("build the docker image"){
                 steps{
                     script {
@@ -28,7 +20,7 @@ pipeline {
                 script{
                     docker.withRegistry('','docker-hub' ){
                         customImage.push();
-                    imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | head -n 1').trim()
+                    // imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | head -n 1').trim()
                     }
                 }
             }
@@ -37,7 +29,6 @@ pipeline {
             steps { 
                  script {
                     def values = readYaml file: "helloworld-python/values.yaml"
-                    // def updated = values.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
                     values.image.tag = "helloworld-python-${env.BUILD_ID}"
                     writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
                     withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
@@ -48,14 +39,6 @@ pipeline {
                             sh 'git add values.yaml'
                             sh 'git commit -m "Update image tag to ' + imageTag + '"'
                             sh 'git push origin HEAD:main'
-                            // git add: 'helloworld-python/values.yaml' ,
-                            // git commit: 'Update image tag to',
-                            // git push: true, 
-                            // git credentialsId: 'GitHub', 
-                            // git url: 'https://github.com/vilayilarun/devops.git', 
-                            // git branch: 'main', 
-                            // git force: true
-                    // git credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/devops.git', branch: 'main', force: true
                         }
                     }
                  }
