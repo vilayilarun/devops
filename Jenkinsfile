@@ -40,13 +40,13 @@ pipeline {
                     def updated = values.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
                     writeYaml file: 'helloworld-python/values.yaml', data: updated, overwrite: true
                     dir('helloworld-python') { 
-                    git add: 'helloworld-python/values.yaml' ,
-                    git commit: 'Update image tag to ' + imageTag,
-                    git push: true, 
-                    git credentialsId: 'GitHub', 
-                    git url: 'https://github.com/vilayilarun/devops.git', 
-                    git branch: 'main', 
-                    git force: true
+                        git add: 'helloworld-python/values.yaml' ,
+                        git commit: 'Update image tag to ' + imageTag,
+                        git push: true, 
+                        git credentialsId: 'GitHub', 
+                        git url: 'https://github.com/vilayilarun/devops.git', 
+                        git branch: 'main', 
+                        git force: true
                     // git credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/devops.git', branch: 'main', force: true
                     }
                  }
