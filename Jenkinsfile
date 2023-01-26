@@ -37,8 +37,9 @@ pipeline {
             steps { 
                  script {
                     def values = readYaml file: "helloworld-python/values.yaml"
-                    def updated = values.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
-                    writeYaml file: 'helloworld-python/values.yaml', data: updated, overwrite: true
+                    // def updated = values.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
+                    values.image.tag = imageTag
+                    writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
                     withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         dir('helloworld-python') {
                             sh "git config --global user.email '${env.GIT_USERNAME}'"
