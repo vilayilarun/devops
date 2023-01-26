@@ -26,7 +26,7 @@ pipeline {
         stage("Push the builded docker image "){
             steps{
                 script{
-                    docker.withRegistry('docker.io','docker-hub' ){
+                    docker.withRegistry(' ','docker-hub' ){
                         customImage.push();
                     imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | head -n 1').trim()
                     }
