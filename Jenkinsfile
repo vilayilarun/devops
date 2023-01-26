@@ -36,16 +36,12 @@ pipeline {
         stage("Update image tags") {
             steps { 
                  script {
-                    def valuesFile = readYaml file: "helloworld-python/values.yaml"
-                    // values.image.tag = imageTag
-                    def updatedValues = valuesFile.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
-                    writeYaml file: 'helloworld-python/values.yaml', data: updatedValues, overwrite: true
+                    def values = readYaml file: "helloworld-python/values.yaml"
+                    def updated = values.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
+                    writeYaml file: 'helloworld-python/values.yaml', data: updated, overwrite: true
                     dir('helloworld-python') { 
-                        // checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: repo]]])
-                        // git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
                     sh 'git add .'
                     sh 'git commit -m "Update build"'
-                    // sh 'git push --force origin main'
                     git credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/devops.git', branch: 'main', force: true
                     }
                  }
