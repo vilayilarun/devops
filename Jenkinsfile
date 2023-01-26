@@ -47,7 +47,7 @@ pipeline {
                             sh "git remote set-url origin https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vilayilarun/devops.git"
                             sh 'git add values.yaml'
                             sh 'git commit -m "Update image tag to ' + imageTag + '"'
-                            sh 'git push origin HEAD:master'
+                            sh 'git push origin HEAD:main'
                             // git add: 'helloworld-python/values.yaml' ,
                             // git commit: 'Update image tag to',
                             // git push: true, 
