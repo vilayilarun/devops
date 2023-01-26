@@ -26,7 +26,7 @@ pipeline {
         stage("Push the builded docker image "){
             steps{
                 script{
-                    docker.withRegistry(' ','docker-hub' ){
+                    docker.withRegistry('','docker-hub' ){
                         customImage.push();
                     imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | head -n 1').trim()
                     }
@@ -44,7 +44,7 @@ pipeline {
                         dir('/var/lib/jenkins/workspace/spark/helloworld-python/') {
                             sh "git config --global user.email '${env.GIT_USERNAME}'"
                             sh "git config --global user.name '${env.GIT_USERNAME}'"
-                            sh "git remote set-url origin https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vilayilarun/devops.gitt"
+                            sh "git remote set-url origin https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vilayilarun/devops.git"
                             sh 'git add values.yaml'
                             sh 'git commit -m "Update image tag to ' + imageTag + '"'
                             sh 'git push origin HEAD:master'
