@@ -28,7 +28,7 @@ pipeline {
                 script{
                     docker.withRegistry('','docker-hub' ){
                         customImage.push();
-                    imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max').trim()
+                    imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | tail -n 1').trim()
                     }
                 }
             }
@@ -40,9 +40,14 @@ pipeline {
                     def updated = values.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
                     writeYaml file: 'helloworld-python/values.yaml', data: updated, overwrite: true
                     dir('helloworld-python') { 
-                    sh 'git add .'
-                    sh 'git commit -m "Update build"'
-                    git credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/devops.git', branch: 'main', force: true
+                    git add: 'helloworld-python/values.yaml' ,
+                    git commit: 'Update image tag to ' + imageTag,
+                    git push: true, 
+                    git credentialsId: 'GitHub', 
+                    git url: 'https://github.com/vilayilarun/devops.git', 
+                    git branch: 'main', 
+                    git force: true
+                    // git credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/devops.git', branch: 'main', force: true
                     }
                  }
             
