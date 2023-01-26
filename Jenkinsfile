@@ -8,14 +8,14 @@ pipeline {
         terraform 'terraform'
     }
     stages {
-        stage ("Testing the code") {
-            steps{
-                script {
-                git branch: 'main', credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git'
-                }
+        // stage ("Testing the code") {
+        //     steps{
+        //         script {
+        //         git branch: 'main', credentialsId: 'GitHub', url: 'https://github.com/vilayilarun/azure-devops.git'
+        //         }
 
-            }
-        }
+        //     }
+        // }
         stage("build the docker image"){
                 steps{
                     script {
@@ -26,7 +26,7 @@ pipeline {
         stage("Push the builded docker image "){
             steps{
                 script{
-                    docker.withRegistry('','docker-hub' ){
+                    docker.withRegistry('docker.io','docker-hub' ){
                         customImage.push();
                     imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | head -n 1').trim()
                     }
@@ -38,7 +38,7 @@ pipeline {
                  script {
                     def values = readYaml file: "helloworld-python/values.yaml"
                     // def updated = values.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
-                    values.image.tag = helloworld-python-${env.BUILD_ID}
+                    values.image.tag = "helloworld-python-${env.BUILD_ID}"
                     writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
                     withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         dir('/var/lib/jenkins/workspace/spark/helloworld-python/') {
@@ -110,7 +110,8 @@ pipeline {
                     sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
                     sh 'aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)'
                 }
-                sh "aws eks --region ${region_name} update-kubeconfig --name ${cluster_name}"
+                // sh "aws eks --region ${region_name} update-kubeconfig --name ${cluster_name}"
+                sh "aws eks update-kubeconfig --name ${cluster_name} --region ${region_name}"
             }
         }        
     }
