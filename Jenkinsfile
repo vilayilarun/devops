@@ -39,7 +39,7 @@ pipeline {
                     def valuesFile = readYaml file: "helloworld-python/values.yaml"
                     // values.image.tag = imageTag
                     def updatedValues = valuesFile.replace(/(image:\s*tag:\s*)(\S+)/, '$1' + imageTag)
-                    writeYaml file: 'helloworld-python/values.yaml', text: updatedValues, overwrite: true
+                    writeYaml file: 'helloworld-python/values.yaml', data: updatedValues, overwrite: true
                     dir('helloworld-python') { 
                         // checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: repo]]])
                         // git add: 'helloworld-python/values.yaml', commit: 'Update image tag to ' + imageTag, push: true, pushCredentialsId: 'GitHub'
