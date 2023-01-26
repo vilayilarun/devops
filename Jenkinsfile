@@ -28,7 +28,7 @@ pipeline {
                 script{
                     docker.withRegistry('','docker-hub' ){
                         customImage.push();
-                    imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | tail -n 1').trim()
+                    imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | head -n 1').trim()
                     }
                 }
             }
@@ -44,9 +44,10 @@ pipeline {
                         dir('helloworld-python') {
                             sh "git config --global user.email '${env.GIT_USERNAME}'"
                             sh "git config --global user.name '${env.GIT_USERNAME}'"
+                            sh "git remote set-url origin https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vilayilarun/devops.gitt"
                             sh 'git add helloworld-python/values.yaml'
                             sh 'git commit -m "Update image tag to ' + imageTag + '"'
-                            sh "git push --force https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vilayilarun/devops.git main"
+                            sh 'git push origin HEAD:master'
                             // git add: 'helloworld-python/values.yaml' ,
                             // git commit: 'Update image tag to',
                             // git push: true, 
