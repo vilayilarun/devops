@@ -41,11 +41,11 @@ pipeline {
                     values.image.tag = helloworld-python-${env.BUILD_ID}
                     writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
                     withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        dir('helloworld-python') {
+                        dir('/var/lib/jenkins/workspace/spark/helloworld-python/') {
                             sh "git config --global user.email '${env.GIT_USERNAME}'"
                             sh "git config --global user.name '${env.GIT_USERNAME}'"
                             sh "git remote set-url origin https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vilayilarun/devops.gitt"
-                            sh 'git add /var/lib/jenkins/workspace/spark/helloworld-python/values.yaml'
+                            sh 'git add values.yaml'
                             sh 'git commit -m "Update image tag to ' + imageTag + '"'
                             sh 'git push origin HEAD:master'
                             // git add: 'helloworld-python/values.yaml' ,
