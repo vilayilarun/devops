@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3"{
     bucket = "terrafrom-vilayil"
-    key = producction/terraform.tfstate
-    region = var.region
+    key = "producction/terraform.tfstate"
+    region = "ap-south-1"
   }
 }

@@ -17,45 +17,62 @@ data "aws_eks_cluster_auth" "myapp-cluster" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.26.0"
-  # insert the 17 required variables here
-  # name of the K8s cluster 
-  cluster_name = "spark"
-  cluster_version = "1.23"
-  # list of subnets on worker nodes to be provisioned
-  subnet_ids =  module.myapp-vpc.private_subnets
-  vpc_id = module.myapp-vpc.vpc_id
+  version = "~> 19.0"
 
-  tags = {
-    env = "development"
-  }
-#   worker_groups = [
-#     {
-#         instance_type = "t2.micro"
-#         name = "worker_group1"
-#         asg_desired_capacity = 2
-#     },
-#     {
-#         instance_type = "t2.medium"
-#         name = "worker_group2"
-#         asg_desired_capacity = 1  
-#     }
-#   ]
- }
-   eks_managed_node_group_defaults = {
-    disk_size      = 50
-    instance_types = ["t2.medium"]
+  cluster_name    = "my-cluster"
+  cluster_version = "1.24"
+
+  cluster_endpoint_public_access  = true
+
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
   }
 
-  eks_managed_node_groups = {
-    blue = {}
-    green = {
-      min_size     = 1
+  vpc_id                   = module.myapp-vpc.vpc_id
+  subnet_ids               = module.myapp-vpc.private_subnets
+  control_plane_subnet_ids = module.myapp-vpc.private_subnets
+  # Self Managed Node Group(s)
+  self_managed_node_group_defaults = {
+    instance_type                          = "t2.medium"
+    update_launch_template_default_version = true
+    iam_role_additional_policies = {
+      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    }
+  }
+
+  self_managed_node_groups = {
+    one = {
+      name         = "mixed-1"
       max_size     = 2
       desired_size = 1
 
-      instance_types = ["t2.medium"]
-      capacity_type  = "SPOT"
+      use_mixed_instances_policy = true
+      mixed_instances_policy = {
+        instances_distribution = {
+          on_demand_base_capacity                  = 0
+          on_demand_percentage_above_base_capacity = 10
+          spot_allocation_strategy                 = "capacity-optimized"
+        }
+
+        override = [
+          {
+            instance_type     = "t2.medium"
+            weighted_capacity = "1"
+          },
+          {
+            instance_type     = "t2.medium"
+            weighted_capacity = "1"
+          },
+        ]
+      }
     }
   }
- 
+}
