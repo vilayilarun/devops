@@ -2,7 +2,7 @@ replicaCount: 2
 image:
   repository: vilayilarun/max
   pullPolicy: IfNotPresent
-  tag: helloworld-python-79
+  tag: helloworld-python-80
 imagePullSecrets: []
 nameOverride: ''
 fullnameOverride: ''
