@@ -29,13 +29,6 @@ module "eks" {
   tags = {
     env = "development"
   }
-  self_managed_node_group_defaults = {
-    instance_type                          = "t2.medium"
-    update_launch_template_default_version = true
-    iam_role_additional_policies = [
-      "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-    ]  
-  }
 #   worker_groups = [
 #     {
 #         instance_type = "t2.micro"
@@ -49,30 +42,20 @@ module "eks" {
 #     }
 #   ]
  }
-  self_managed_node_groups = {
-    one = {
-      name         = "mixed-1"
-      max_size     = 3
-      desired_size = 2
+   eks_managed_node_group_defaults = {
+    disk_size      = 50
+    instance_types = ["t2.medium"]
+  }
 
-      use_mixed_instances_policy = true
-      mixed_instances_policy = {
-        instances_distribution = {
-          on_demand_base_capacity                  = 0
-          on_demand_percentage_above_base_capacity = 10
-          spot_allocation_strategy                 = "capacity-optimized"
-        }
+  eks_managed_node_groups = {
+    blue = {}
+    green = {
+      min_size     = 1
+      max_size     = 2
+      desired_size = 1
 
-        override = [
-          {
-            instance_type     = "t2.medium"
-            weighted_capacity = "1"
-          },
-          {
-            instance_type     = "t2.medium"
-            weighted_capacity = "1"
-          },
-        ]
-      }
+      instance_types = ["t2.medium"]
+      capacity_type  = "SPOT"
     }
   }
+ 
