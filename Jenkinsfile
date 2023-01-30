@@ -51,7 +51,7 @@ pipeline {
                 AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
             }
             steps {
-                dir("./terraform") {
+                dir("terraform") {
                 // withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
                 //     sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
                 //     sh 'aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)'
@@ -62,7 +62,7 @@ pipeline {
         }
         stage('Terraform Plan') {
             steps {
-                dir("./terraform") {
+                dir("terraform") {
                 sh "${tool 'terraform'} plan -var-file=production.tfvars -out=tfplan"
             }
         }
