@@ -5,7 +5,7 @@ pipeline {
     }
     tools {
         maven 'maven'
-        terraform 'terraform'
+        // terraform 'terraform'
     }
     stages {
         stage("build the docker image"){
@@ -56,21 +56,21 @@ pipeline {
                 //     sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
                 //     sh 'aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)'
                 // }
-                sh "${tool 'terraform'} init"
+                sh "terraform init"
             }
         }
         }
         stage('Terraform Plan') {
             steps {
                 dir("terraform") {
-                sh "${tool 'terraform'} plan -var-file=production.tfvars -out=tfplan"
+                sh "terraform plan -var-file=production.tfvars -out=tfplan"
             }
         }
         }
         stage('Terraform Apply') {
             steps {
-                dir("./terraform") {
-                sh "${tool 'terraform'} apply -auto-approve tfplan"
+                dir("terraform") {
+                sh "terraform apply -auto-approve tfplan"
                 script {
                     def cluster_status = sh(returnStatus: true, script: 'terraform output cluster_status')
                     if (cluster_status == 0) {
