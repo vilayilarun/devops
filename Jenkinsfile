@@ -37,7 +37,7 @@ pipeline {
                             sh "git config --global user.name '${env.GIT_USERNAME}'"
                             sh "git remote set-url origin https://${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com/vilayilarun/devops.git"
                             sh 'git add values.yaml'
-                            sh 'git commit -m "Update image tag to ' + imageTag + '"'
+                            sh 'git commit -m "Docker image has been updated on the charts Values.yaml"'
                             sh 'git push origin HEAD:main'
                         }
                     }
