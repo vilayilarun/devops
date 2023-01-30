@@ -19,7 +19,7 @@ module "myapp-vpc" {
   private_subnets = var.private_subnet_cidr_blocks
   public_subnets = var.public_subnet_cidr_blocks
   #define that the subnets need to be deployed on all three AZ
-  azs = data.aws_availability_zones.azs.name
+  azs = data.aws_availability_zones.azs.names
 
   #enable nat gateway
   # All the private subnet will routr thier internet traffic thorugh this Single nat gateway.
