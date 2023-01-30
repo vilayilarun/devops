@@ -1,6 +1,6 @@
 # Kubernetes provider
 provider "kubernetes" {
-    load_config_file = "false"
+    # load_config_file = "false"
     #end point of the cluster
     host = data.aws_eks_cluster.myapp-cluster.endpoint
     token = data.aws_eks_cluster_auth.myapp-cluster.token
