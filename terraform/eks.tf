@@ -23,7 +23,7 @@ module "eks" {
   cluster_name = "spark"
   cluster_version = "1.23"
   # list of subnets on worker nodes to be provisioned
-  subnets =  module.myapp-vpc.private_subnets
+  subnet_ids =  module.myapp-vpc.private_subnets
   vpc_id = module.myapp-vpc.vpc_id
 
   tags = {
