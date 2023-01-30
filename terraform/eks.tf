@@ -29,6 +29,13 @@ module "eks" {
   tags = {
     env = "development"
   }
+  self_managed_node_group_defaults = {
+    instance_type                          = "t2.medium"
+    update_launch_template_default_version = true
+    iam_role_additional_policies = [
+      "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    ]  
+  }
 #   worker_groups = [
 #     {
 #         instance_type = "t2.micro"
