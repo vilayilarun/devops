@@ -24,19 +24,19 @@ module "myapp-vpc" {
   #enable nat gateway
   # All the private subnet will routr thier internet traffic thorugh this Single nat gateway.
   enable_nat_gateway = true
-  single_nate_gateway = true
+  single_nat_gateway = true
   enable_dns_hostnames = true
 
   tags = {
     "kubernetes.io/cluster/spark" = "shared"
   }
 
-  public_subtnet_tags = {
+  public_subnet_tags = {
     "kubernetes.io/cluster/spark" = "shared"
     "kubernetes.io/role/elb" = 1
   }
 
-  private_submet_tags = {
+  private_subnet_tags = {
     "kubernetes.io/cluster/spark" = "shared"
     "kubernetes.io/role/internal-elb" = 1
   }
