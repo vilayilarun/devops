@@ -2,6 +2,8 @@ pipeline {
     agent any
     environment {
         imageTag = ""
+        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')                 
     }
     tools {
         maven 'maven'
@@ -46,10 +48,10 @@ pipeline {
             }
         }
         stage('Terraform Init') {
-            environment{
-                AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
-                AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
-            }
+            // environment{
+            //     AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+            //     AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
+            // }
             steps {
                 dir("terraform") {
                 // withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
@@ -61,6 +63,10 @@ pipeline {
         }
         }
         stage('Terraform Plan') {
+            // environment{
+            //     AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+            //     AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
+            // }            
             steps {
                 dir("terraform") {
                 sh "terraform plan -var-file=production.tfvars -out=tfplan"
@@ -68,6 +74,7 @@ pipeline {
         }
         }
         stage('Terraform Apply') {
+
             steps {
                 dir("terraform") {
                 sh "terraform apply -auto-approve tfplan"
@@ -92,10 +99,10 @@ pipeline {
             }
         }       
         stage('Connect to K8s') {
-            environment{
-                AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
-                AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
-            }
+            // environment{
+            //     AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+            //     AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
+            // }
             steps {
                 // withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
                 //     sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
