@@ -47,39 +47,56 @@ module "eks" {
   subnet_ids               = module.myapp-vpc.private_subnets
   control_plane_subnet_ids = module.myapp-vpc.private_subnets
   # Self Managed Node Group(s)
-  self_managed_node_group_defaults = {
-    instance_type                          = "t2.medium"
-    update_launch_template_default_version = true
-    iam_role_additional_policies = {
-      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-    }
+  # EKS Managed Node Group(s)
+  eks_managed_node_group_defaults = {
+    instance_types = ["t2.medium"]
   }
 
-  self_managed_node_groups = {
-    one = {
-      name         = "mixed-1"
-      max_size     = 2
+  eks_managed_node_groups = {
+    blue = {}
+    green = {
+      min_size     = 1
+      max_size     = 3
       desired_size = 2
 
-      use_mixed_instances_policy = true
-      mixed_instances_policy = {
-        instances_distribution = {
-          on_demand_base_capacity                  = 0
-          on_demand_percentage_above_base_capacity = 10
-          spot_allocation_strategy                 = "capacity-optimized"
-        }
-
-        override = [
-          {
-            instance_type     = "t2.large"
-            weighted_capacity = "1"
-          },
-          {
-            instance_type     = "t2.medium"
-            weighted_capacity = "2"
-          },
-        ]
-      }
+      instance_types = ["t2.medium"]
+      capacity_type  = "SPOT"
     }
   }
+  
+  # self_managed_node_group_defaults = {
+  #   instance_type                          = "t2.medium"
+  #   update_launch_template_default_version = true
+  #   iam_role_additional_policies = {
+  #     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  #   }
+  # }
+
+  #   self_managed_node_groups = {
+  #   one = {
+  #     name         = "mixed-1"
+  #     max_size     = 2
+  #     desired_size = 1
+
+  #     use_mixed_instances_policy = true
+  #     mixed_instances_policy = {
+  #       instances_distribution = {
+  #         on_demand_base_capacity                  = 0
+  #         on_demand_percentage_above_base_capacity = 10
+  #         spot_allocation_strategy                 = "capacity-optimized"
+  #       }
+
+  #       override = [
+  #         {
+  #           instance_type     = "t2.large"
+  #           weighted_capacity = "1"
+  #         },
+  #         {
+  #           instance_type     = "t2.medium"
+  #           weighted_capacity = "1"
+  #         },
+  #       ]
+  #     }
+  #   }
+  # }
 }
