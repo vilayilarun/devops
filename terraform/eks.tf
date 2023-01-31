@@ -2,24 +2,31 @@
 provider "kubernetes" {
     # load_config_file = "false"
     #end point of the cluster
-    host = data.aws_eks_cluster.myapp-cluster.endpoint
-    token = data.aws_eks_cluster_auth.myapp-cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.myapp-cluster.certificate_authority.0.data)
+    # host = data.aws_eks_cluster.myapp-cluster.endpoint
+    host = module.eks.cluster_endpoint
+    # token = data.aws_eks_cluster_auth.myapp-cluster.token
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
 }
 
-data "aws_eks_cluster" "myapp-cluster" {
-    name = module.eks.cluster_id
-}
+# data "aws_eks_cluster" "myapp-cluster" {
+#     name = module.eks.cluster_id
+# }
 
-data "aws_eks_cluster_auth" "myapp-cluster" {
-    name = module.eks.cluster_id
-}
+# data "aws_eks_cluster_auth" "myapp-cluster" {
+#     name = module.eks.cluster_id
+# }
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.0"
 
-  cluster_name    = "my-cluster"
+  cluster_name    = "spark"
   cluster_version = "1.24"
 
   cluster_endpoint_public_access  = true
@@ -64,7 +71,7 @@ module "eks" {
 
         override = [
           {
-            instance_type     = "t2.medium"
+            instance_type     = "t2.large"
             weighted_capacity = "1"
           },
           {
