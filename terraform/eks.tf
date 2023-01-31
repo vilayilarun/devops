@@ -26,7 +26,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.0"
 
-  cluster_name    = "spark"
+  cluster_name    = var.cluster_name
   cluster_version = "1.24"
 
   cluster_endpoint_public_access  = true
@@ -59,7 +59,7 @@ module "eks" {
     one = {
       name         = "mixed-1"
       max_size     = 2
-      desired_size = 1
+      desired_size = 2
 
       use_mixed_instances_policy = true
       mixed_instances_policy = {
@@ -76,7 +76,7 @@ module "eks" {
           },
           {
             instance_type     = "t2.medium"
-            weighted_capacity = "1"
+            weighted_capacity = "2"
           },
         ]
       }
