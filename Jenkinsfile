@@ -48,25 +48,13 @@ pipeline {
             }
         }
         stage('Terraform Init') {
-            // environment{
-            //     AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
-            //     AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
-            // }
             steps {
                 dir("terraform") {
-                // withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
-                //     sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
-                //     sh 'aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)'
-                // }
                 sh "terraform init"
             }
         }
         }
-        stage('Terraform Plan') {
-            // environment{
-            //     AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
-            //     AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
-            // }            
+        stage('Terraform Plan') {           
             steps {
                 dir("terraform") {
                 sh "terraform plan -var-file=production.tfvars -out=tfplan"
@@ -93,21 +81,21 @@ pipeline {
             steps {
                 script {
                     def tfvars = readFile('terraform/production.tfvars')
-                    def clusterName = tfvars =~ /cluster_name\s*=\s*"([^"]+)"/ ? tfvars =~ /cluster_name\s*=\s*"([^"]+)"/[0][1] : ''
-                    def region = tfvars =~ /region\s*=\s*"([^"]+)"/ ? tfvars =~ /region\s*=\s*"([^"]+)"/[0][1] : ''
-                    echo "Cluster name: ${clusterName}"
-                    echo "Region: ${region}"
+                    // Extract the AWS region and cluster name from the tfvars file
+                    def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '')
+                    def clusterName = tfvars.split("\n").find { it.startsWith('cluster_name = ') }.split(' = ')[1].replaceAll('"', '')
+                    // Store the extracted variables as environment variables for use in later stages
+                    env.AWS_REGION = region
+                    env.CLUSTER_NAME = clusterName
+                    // echo "Cluster name: ${clusterName}"
+                    // echo "Region: ${region}"
                 }
             }
         }       
         stage('Download EKS Configuration') {
-            // environment{
-            //     AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
-            //     AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
-            // }
             steps {
                 script {
-                    sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
+                    sh "aws eks update-kubeconfig --name ${env.CLUSTER_NAME} --region ${env.AWS_REGION}"
                 }
             }
         }        
