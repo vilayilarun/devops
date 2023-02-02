@@ -93,8 +93,8 @@ pipeline {
             steps {
                 script {
                     def tfvars = readFile('terraform/production.tfvars')
-                    def clusterName = tfVarsFile =~ /cluster_name\s*=\s*"([^"]+)"/ ? tfVarsFile =~ /cluster_name\s*=\s*"([^"]+)"/[0][1] : ''
-                    def region = tfVarsFile =~ /region\s*=\s*"([^"]+)"/ ? tfVarsFile =~ /region\s*=\s*"([^"]+)"/[0][1] : ''
+                    def clusterName = tfvars =~ /cluster_name\s*=\s*"([^"]+)"/ ? tfvars =~ /cluster_name\s*=\s*"([^"]+)"/[0][1] : ''
+                    def region = tfvars =~ /region\s*=\s*"([^"]+)"/ ? tfvars =~ /region\s*=\s*"([^"]+)"/[0][1] : ''
                     echo "Cluster name: ${clusterName}"
                     echo "Region: ${region}"
                 }
