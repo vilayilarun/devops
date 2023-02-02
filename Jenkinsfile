@@ -92,24 +92,23 @@ pipeline {
         stage('Read tfvars file') {
             steps {
                 script {
-                    def tfvars = readFile './terraform/production.tfvars'
-                    def cluster_name = /cluster_name = "(.*)"/.exec(tfvars)[1]
-                    def region_name = /region = "(.*)"/.exec(tfvars)[1]
+                    def tfvars = readFile('terraform/production.tfvars')
+                    def clusterName = tfVarsFile =~ /cluster_name\s*=\s*"([^"]+)"/ ? tfVarsFile =~ /cluster_name\s*=\s*"([^"]+)"/[0][1] : ''
+                    def region = tfVarsFile =~ /region\s*=\s*"([^"]+)"/ ? tfVarsFile =~ /region\s*=\s*"([^"]+)"/[0][1] : ''
+                    echo "Cluster name: ${clusterName}"
+                    echo "Region: ${region}"
                 }
             }
         }       
-        stage('Connect to K8s') {
+        stage('Download EKS Configuration') {
             // environment{
             //     AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
             //     AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')               
             // }
             steps {
-                // withCredentials([file(credentialsId: 'aws_credentials', variable: 'AWS_CREDS')]) {
-                //     sh 'aws configure set aws_access_key_id $(echo ${AWS_CREDS} | jq -r .access_key)'
-                //     sh 'aws configure set aws_secret_access_key $(echo ${AWS_CREDS} | jq -r .secret_key)'
-                // }
-                // sh "aws eks --region ${region_name} update-kubeconfig --name ${cluster_name}"
-                sh "aws eks update-kubeconfig --name ${cluster_name} --region ${region_name}"
+                script {
+                    sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
+                }
             }
         }        
     }
