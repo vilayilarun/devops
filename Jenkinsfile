@@ -81,9 +81,13 @@ pipeline {
             steps {
                 script {
                     def tfvars = readFile('terraform/production.tfvars')
+                    def match = tfvars =~ /cluster_name\s*=\s*"([^"]+)"/
+                    def clusterName = match ? match[0][1] : ''
+                    def region = tfvars =~ /region\s*=\s*"([^"]+)"/
+                    def regionName = region ? region[0][1] : ''                   
                     // Extract the AWS region and cluster name from the tfvars file
-                    def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '')
-                    def clusterName = tfvars.split("\n").find { it.startsWith('cluster_name = ') }.split(' = ')[1].replaceAll('"', '')
+                    // def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '')
+                    // def clusterName = tfvars.split("\n").find { it.startsWith('cluster_name = ') }.split(' = ')[1].replaceAll('"', '')
                     // Store the extracted variables as environment variables for use in later stages
                     env.AWS_REGION = region
                     env.CLUSTER_NAME = clusterName
