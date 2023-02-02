@@ -97,6 +97,10 @@ pipeline {
             }
         }       
         stage('Download EKS Configuration') {
+            environment {
+                AWS_REGION = "${env.AWS_REGION}"
+                CLUSTER_NAME = "${env.CLUSTER_NAME}"
+            }
             steps {
                 script {
                     sh "aws eks update-kubeconfig --name ${env.CLUSTER_NAME} --region ${env.AWS_REGION}"
