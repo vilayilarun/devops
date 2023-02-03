@@ -3,7 +3,7 @@ image:
   repository: vilayilarun/max
   pullPolicy: IfNotPresent
   tag: helloworld-python-132
-imagePullSecrets: [myregistrykey]
+imagePullSecrets: myregistrykey
 nameOverride: ''
 fullnameOverride: ''
 serviceAccount:
