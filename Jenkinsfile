@@ -89,27 +89,27 @@ pipeline {
                     def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '')
                     def clusterName = tfvars.split("\n").find { it.startsWith('cluster_name = ') }.split(' = ')[1].replaceAll('"', '').trim().replaceAll('\r','').replaceAll('\n','')
                     // Store the extracted variables as environment variables for use in later stages
-                    // sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
+                    sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
                     // env.AWS_REGION = region
                     // env.CLUSTER_NA:wq:wqME = clusterName
-                    sh "echo ${clusterName}"
-                    sh "echo ${region}"
-                    sh "export CLUSTER_NAME=${clusterName}"
-                    sh "export AWS_REGION=${region}"
+                    // sh "echo ${clusterName}"
+                    // sh "echo ${region}"
+                    // sh "export CLUSTER_NAME=${clusterName}"
+                    // sh "export AWS_REGION=${region}"
                 }
             }
         }       
-        stage('Download EKS Configuration') {
-            // environment {
-            //     AWS_REGION = ${env.AWS_REGION}
-            //     CLUSTER_NAME = ${env.CLUSTER_NAME}
-            // }
-            steps {
-                script {
-                    sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
-                }
-            }
-        }        
+        // stage('Download EKS Configuration') {
+        //     // environment {
+        //     //     AWS_REGION = ${env.AWS_REGION}
+        //     //     CLUSTER_NAME = ${env.CLUSTER_NAME}
+        //     // }
+        //     steps {
+        //         script {
+        //             sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
+        //         }
+        //     }
+        // }        
     }
     post {
         always {
