@@ -77,7 +77,7 @@ pipeline {
             }
         }
         }
-        stage('Read tfvars file') {
+        stage('Read tfvars file and Dwonload EKS configurations') {
             steps {
                 script {
                     def tfvars = readFile('terraform/production.tfvars')
@@ -89,24 +89,25 @@ pipeline {
                     // def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '')
                     // def clusterName = tfvars.split("\n").find { it.startsWith('cluster_name = ') }.split(' = ')[1].replaceAll('"', '')
                     // Store the extracted variables as environment variables for use in later stages
-                    env.AWS_REGION = region
-                    env.CLUSTER_NAME = clusterName
+                    sh "aws eks update-kubeconfig --name ${region} --region ${clusterName}"
+                    // env.AWS_REGION = region
+                    // env.CLUSTER_NAME = clusterName
                     // echo "Cluster name: ${clusterName}"
                     // echo "Region: ${region}"
                 }
             }
         }       
-        stage('Download EKS Configuration') {
-            environment {
-                AWS_REGION = "${env.AWS_REGION}"
-                CLUSTER_NAME = "${env.CLUSTER_NAME}"
-            }
-            steps {
-                script {
-                    sh "aws eks update-kubeconfig --name ${env.CLUSTER_NAME} --region ${env.AWS_REGION}"
-                }
-            }
-        }        
+        // stage('Download EKS Configuration') {
+        //     environment {
+        //         AWS_REGION = ${env.AWS_REGION}
+        //         CLUSTER_NAME = ${env.CLUSTER_NAME}
+        //     }
+        //     steps {
+        //         script {
+        //             sh "aws eks update-kubeconfig --name ${env.CLUSTER_NAME} --region ${env.AWS_REGION}"
+        //         }
+        //     }
+        // }        
     }
     post {
         always {
