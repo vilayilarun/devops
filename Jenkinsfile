@@ -92,8 +92,8 @@ pipeline {
                     // sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
                     // env.AWS_REGION = region
                     // env.CLUSTER_NAME = clusterName
-                    export CLUSTER_NAME=${clusterName}
-                    export AWS_REGION=${region}
+                    sh "export CLUSTER_NAME=${clusterName}"
+                    sh "export AWS_REGION=${region}"
                 }
             }
         }       
