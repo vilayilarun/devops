@@ -81,35 +81,33 @@ pipeline {
             steps {
                 script {
                     def tfvars = readFile('terraform/production.tfvars')
-                    // def match = tfvars =~ /cluster_name\s*=\s*"([^"]+)"/
-                    // def clusterName = match ? match[0][1] : ''
-                    // def region = tfvars =~ /region\s*=\s*"([^"]+)"/
-                    // def regionName = region ? region[0][1] : ''                   
-                    // Extract the AWS region and cluster name from the tfvars file
                     def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '').trim().replaceAll('\r','').replaceAll('\n','')
                     def clusterName = tfvars.split("\n").find { it.startsWith('cluster_name = ') }.split(' = ')[1].replaceAll('"', '').trim().replaceAll('\r','').replaceAll('\n','')
-                    // Store the extracted variables as environment variables for use in later stages
                     sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
-                    // env.AWS_REGION = region
-                    // env.CLUSTER_NA:wq:wqME = clusterName
-                    // sh "echo ${clusterName}"
-                    // sh "echo ${region}"
-                    // sh "export CLUSTER_NAME=${clusterName}"
-                    // sh "export AWS_REGION=${region}"
                 }
             }
         }       
-        // stage('Download EKS Configuration') {
-        //     // environment {
-        //     //     AWS_REGION = ${env.AWS_REGION}
-        //     //     CLUSTER_NAME = ${env.CLUSTER_NAME}
-        //     // }
-        //     steps {
-        //         script {
-        //             sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
-        //         }
-        //     }
-        // }        
+        stage('Deploy the Helm Charts to the production') {
+            steps {
+                sh "helm install sprk helloworld-python"
+                script {
+                    def cluster_status = sh(returnStatus: true, script: 'echo $?')
+                    if (cluster_status == 0) {
+                        slackSend (color: 'good', message: 'Deployed the application successfully!', channel: '#devops', tokenCredentialId: 'slacktoken')
+                    } else {
+                        slackSend (color: 'danger', message: 'Application dployment failed.', channel: '#devops', tokenCredentialId: 'slacktoken')
+                    }
+                }
+            }
+        }
+        stage('Check the status of the pods') {
+            steps {
+                script {
+                    sh 'helm list'
+                    sh 'kubectl get po'
+                }
+            }
+        }        
     }
     post {
         always {
