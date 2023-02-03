@@ -86,7 +86,7 @@ pipeline {
                     // def region = tfvars =~ /region\s*=\s*"([^"]+)"/
                     // def regionName = region ? region[0][1] : ''                   
                     // Extract the AWS region and cluster name from the tfvars file
-                    def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '')
+                    def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '').trim().replaceAll('\r','').replaceAll('\n','')
                     def clusterName = tfvars.split("\n").find { it.startsWith('cluster_name = ') }.split(' = ')[1].replaceAll('"', '').trim().replaceAll('\r','').replaceAll('\n','')
                     // Store the extracted variables as environment variables for use in later stages
                     sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
