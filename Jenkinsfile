@@ -80,7 +80,7 @@ pipeline {
         stage('Read tfvars file and Dwonload EKS configurations') {
             steps {
                 script {
-                    // def tfvars = readFile('terraform/production.tfvars')
+                    def tfvars = readFile('terraform/production.tfvars')
                     // def match = tfvars =~ /cluster_name\s*=\s*"([^"]+)"/
                     // def clusterName = match ? match[0][1] : ''
                     // def region = tfvars =~ /region\s*=\s*"([^"]+)"/
@@ -91,7 +91,9 @@ pipeline {
                     // Store the extracted variables as environment variables for use in later stages
                     // sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
                     // env.AWS_REGION = region
-                    // env.CLUSTER_NAME = clusterName
+                    // env.CLUSTER_NA:wq:wqME = clusterName
+                    sh "echp ${clusterName}"
+                    sh "echo ${region}"
                     sh "export CLUSTER_NAME=${clusterName}"
                     sh "export AWS_REGION=${region}"
                 }
