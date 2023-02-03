@@ -1,5 +1,7 @@
 pipeline {
+    // Pipeline Agents
     agent any
+    // AWS secrets and access keys are configured as env. The values are proppulated from the Jenkins cred
     environment {
         imageTag = ""
         AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
@@ -13,6 +15,7 @@ pipeline {
         stage("build the docker image"){
                 steps{
                     script {
+                        //Building the docker image, Image repo and tags can be updated
                         customImage = docker.build("vilayilarun/max:helloworld-python-${env.BUILD_ID}")
                     }
                 }
@@ -20,9 +23,9 @@ pipeline {
         stage("Push the builded docker image "){
             steps{
                 script{
+                    // Push the image to the docker-hub, Docker registry can be added to push
                     docker.withRegistry('','docker-hub' ){
                         customImage.push();
-                    // imageTag = sh(returnStdout: true, script: 'docker images --format "{{.Tag}}" vilayilarun/max | head -n 1').trim()
                     }
                 }
             }
@@ -30,9 +33,13 @@ pipeline {
         stage("Update image tags") {
             steps { 
                  script {
+                    // Reading the Values.yaml file 
                     def values = readYaml file: "helloworld-python/values.yaml"
+                    // Seting the tag value 
                     values.image.tag = "helloworld-python-${env.BUILD_ID}"
+                    // Writing back the image tag to the values.yaml
                     writeYaml file: 'helloworld-python/values.yaml', data: values, overwrite: true
+                    // Pushing the updated image tag to the Git repo
                     withCredentials([usernamePassword(credentialsId: 'GitHub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         dir('/var/lib/jenkins/workspace/spark/helloworld-python/') {
                             sh "git config --global user.email '${env.GIT_USERNAME}'"
@@ -50,6 +57,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 dir("terraform") {
+                // Initializing the terrafrom
                 sh "terraform init"
             }
         }
