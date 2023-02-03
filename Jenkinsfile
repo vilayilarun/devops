@@ -89,25 +89,25 @@ pipeline {
                     // def region = tfvars.split("\n").find { it.startsWith('region = ') }.split(' = ')[1].replaceAll('"', '')
                     // def clusterName = tfvars.split("\n").find { it.startsWith('cluster_name = ') }.split(' = ')[1].replaceAll('"', '')
                     // Store the extracted variables as environment variables for use in later stages
-                    sh "aws eks update-kubeconfig --name ${region} --region ${clusterName}"
+                    // sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
                     // env.AWS_REGION = region
                     // env.CLUSTER_NAME = clusterName
-                    // echo "Cluster name: ${clusterName}"
-                    // echo "Region: ${region}"
+                    export CLUSTER_NAME=${clusterName}
+                    export AWS_REGION=${region}
                 }
             }
         }       
-        // stage('Download EKS Configuration') {
-        //     environment {
-        //         AWS_REGION = ${env.AWS_REGION}
-        //         CLUSTER_NAME = ${env.CLUSTER_NAME}
-        //     }
-        //     steps {
-        //         script {
-        //             sh "aws eks update-kubeconfig --name ${env.CLUSTER_NAME} --region ${env.AWS_REGION}"
-        //         }
-        //     }
-        // }        
+        stage('Download EKS Configuration') {
+            // environment {
+            //     AWS_REGION = ${env.AWS_REGION}
+            //     CLUSTER_NAME = ${env.CLUSTER_NAME}
+            // }
+            steps {
+                script {
+                    sh "aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${AWS_REGION}"
+                }
+            }
+        }        
     }
     post {
         always {
