@@ -4,7 +4,7 @@ image:
   pullPolicy: IfNotPresent
   tag: helloworld-python-136
 imagePullSecrets:
-- myregistrykey
+  - name: myregistrykey
 nameOverride: ''
 fullnameOverride: ''
 serviceAccount:
