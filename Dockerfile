@@ -1,12 +1,5 @@
-# FROM python:latest
-# WORKDIR /app
-# COPY . /app
-# RUN pip3 install -r requirements.txt
-# EXPOSE 5000
-# CMD ["python3", "helloworld.py"]
-
 # Use an official Python runtime as the base image
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-buster 
 
 # Set the working directory
 WORKDIR /app
@@ -28,6 +21,6 @@ CMD ["python", "helloworld.py"]
 
 # Build the final image
 FROM python:3.9-slim-buster AS release
-COPY --from=0 /app /app
+COPY --from=python:3.9-slim-buster /app /app
 EXPOSE 5000
 CMD ["python", "helloworld.py"]
