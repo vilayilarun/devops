@@ -10,7 +10,9 @@ COPY requirements.txt .
 # Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the application code
 COPY helloworld.py /app/
+
 # Expose the port
 EXPOSE 5000
 
@@ -18,7 +20,9 @@ EXPOSE 5000
 CMD ["python", "helloworld.py"]
 
 # Build the final image
-FROM python:3.9-slim-buster 
-COPY --from=build /app /app
+FROM python:3.9-slim-buster
+COPY --from=build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=build /app .
 EXPOSE 5000
-CMD ["python", "/app/helloworld.py"]
+CMD ["python", "helloworld.py"]
+
