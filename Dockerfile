@@ -1,5 +1,5 @@
 # Use an official Python runtime as the base image
-FROM python:3.9-slim-buster 
+FROM python:3.9-slim-buster as build
 
 # Set the working directory
 WORKDIR /app
@@ -20,7 +20,7 @@ EXPOSE 5000
 CMD ["python", "helloworld.py"]
 
 # Build the final image
-FROM python:3.9-slim-buster AS release
-COPY --from=python:3.9-slim-buster /app /app
+FROM python:3.9-slim-buster 
+COPY --from=build /app /app
 EXPOSE 5000
 CMD ["python", "helloworld.py"]
