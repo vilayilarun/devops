@@ -18,7 +18,7 @@ service:
   type: LoadBalancer
   port: 5000
 ingress:
-  enabled: true
+  enabled: false
   className: ''
   annotations: {}
   hosts:
