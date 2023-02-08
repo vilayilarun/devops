@@ -94,7 +94,17 @@ pipeline {
                     sh "aws eks update-kubeconfig --name ${clusterName} --region ${region}"
                 }
             }
-        }       
+        }
+            //    Create registry secrets for the Helm deployment.
+        stage('Create registry secrets for the Helm deployment'){
+            steps{
+                script{
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]){
+                        sh 'kubectl create secret docker-registry myregistry --docker-server=https://index.docker.io/v1/ --docker-username=${env.DOCKER_USERNAME} --docker-password=${env.DOCKER_PASSWORD} --docker-email=vilayilarun@gamil.com'
+                    }
+                }
+            }
+        }
         stage('Deploy the Helm Charts to the production') {
             steps {
                 sh "helm install sprk helloworld-python"
