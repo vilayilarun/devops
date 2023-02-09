@@ -19,4 +19,5 @@
   export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
+  kubectl --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "helloworld-python.name"  -o jsonpath="{.items[0].status.loadBalancer.ingress[0].hostname}"
 {{- end }}
