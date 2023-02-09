@@ -12,4 +12,4 @@ def helloIndex():
         description="Smarter page templates with Flask & Jinja."
     )
 
-app.run(host='0.0.0.0', port=5003)
+app.run(host='0.0.0.0', port=5000)
