@@ -100,6 +100,7 @@ pipeline {
             steps{
                 script{
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]){
+                        sh 'kubectl delete secret myregistry --ignore-not-found'
                         sh 'kubectl create secret docker-registry myregistry --docker-server=https://index.docker.io/v1/ --docker-username=${DOCKER_USERNAME} --docker-password=${DOCKER_PASSWORD} --docker-email=vilayilarun@gamil.com'
                     }
                 }
