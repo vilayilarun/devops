@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY helloworld.py /app/
+COPY helloworld.py static templates /app/
 
 # Expose the port
 EXPOSE 5000
