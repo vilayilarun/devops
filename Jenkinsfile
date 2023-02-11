@@ -115,7 +115,7 @@ pipeline {
                     chart_name = "spark"
                     release_name = "helloworld-python"
                     // Check if the chart is already deployed
-                    deployed = sh(returnStdout: true, script: "helm list -q --all | grep ${release_name}").trim()
+                    def deployed = sh(returnStdout: true, script: "helm list -q --all | grep ${release_name}").trim()
                     if (deployed) {
                     sh "helm upgrade ${release_name} ${chart_name}"
                     }
