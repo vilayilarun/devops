@@ -16,7 +16,7 @@ COPY templates /app/templates
 
 COPY static /app/static
 # Expose the port
-EXPOSE 5000
+EXPOSE 443
 
 # Run the application
 CMD ["python3", "./helloworld.py"]
@@ -25,5 +25,5 @@ CMD ["python3", "./helloworld.py"]
 FROM python:3.9-slim-buster
 COPY --from=build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 COPY --from=build /app /app/
-EXPOSE 5000
+EXPOSE 443
 CMD ["python3", "/app/helloworld.py"]
