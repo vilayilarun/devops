@@ -108,15 +108,15 @@ pipeline {
         }
         stage('Deploy the Helm Charts to the production') {
             steps {
-                # Define the chart name and release name
+                // Define the chart name and release name
                 chart_name = "spark"
                 release_name = "helloworld-python"
-                # Check if the chart is already deployed
+                // Check if the chart is already deployed
                 deployed = sh(returnStdout: true, script: "helm list -q --all | grep $release_name").trim()
                 if (deployed) {
                 sh "helm upgrade $release_name $chart_name"
                 }
-                # If the chart is not deployed, perform a Helm install
+                // If the chart is not deployed, perform a Helm install
                 else {
                 sh "helm install $chart_name $release_name"
                 }
