@@ -16,7 +16,7 @@ podSecurityContext: {}
 securityContext: {}
 service:
   type: LoadBalancer
-  port: 443
+  port: 80
 ingress:
   enabled: false
   className: ''

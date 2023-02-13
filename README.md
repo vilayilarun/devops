@@ -29,7 +29,8 @@
 3. aws cli
 3. terraform
 #### Secrets
-1. SCM credentials (GitHub/SVN)
-2. Repositroy Credentials
-3. AWS credentials
-4. Slack credentials
+##### You can use your own names for the screts but the code needs to be aligned accordingly.
+1. SCM credentials (GitHub/SVN) with name "GitHub"
+2. Repositroy Credentials with name "docker-hub"
+3. AWS credentials "aws_access_key_id" and "aws_secret_access_key"
+4. Slack credentials "slacktoken"
