@@ -113,7 +113,7 @@ pipeline {
                     // Check if the chart is already deployed
                     def deployed = sh(returnStdout: true, script: "helm list -q --all").trim().contains(chart_name)
                     if (deployed) {
-                        sh "helm upgrade ${release_name} ${chart_name}"
+                        sh "helm upgrade ${chart_name} ${release_name}"
                     }
                     // If the chart is not deployed, perform a Helm install
                     else {
