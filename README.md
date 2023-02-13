@@ -10,7 +10,7 @@
 - A [Slack account](https://slack.com/) needs to created and inetgrated with Jenkins Server for sending the notifications.
 - A  Jenkins Server is ready and runing.
 - Install [AWS CLI](https://aws.amazon.com/cli/) on your Jenkins server
-- Install [helm](https://helm.sh/docs/intro/install/) on the Jenkins server whcih is used to deploy the container to the cluster.
+- Install [helm](https://helm.sh/docs/intro/install/) on the Jenkins server which is used to deploy the container to the cluster.
 -  A Terraform tfvars file is required with name production.tfvars
 ## Overview
 - This is a simple end to end CI/CD project, where we are going to deploy a python application the EKS cluetr. 
