@@ -8,7 +8,7 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')                 
     }
     stages {
-        stage("build the docker image"){
+        stage("Build Docker image"){
                 steps{
                     script {
                         //Building the docker image, Image repo and tags can be updated
@@ -16,7 +16,7 @@ pipeline {
                     }
                 }
             }
-        stage("Push the builded docker image "){
+        stage("Push Docker image "){
             steps{
                 script{
                     // Push the image to the docker-hub, Docker registry can be added to push
@@ -26,7 +26,7 @@ pipeline {
                 }
             }
         }
-        stage("Update image tags") {
+        stage("Updates image tags in Charts values.yaml and push back to GitHub") {
             steps { 
                  script {
                     // Reading the Values.yaml file 
