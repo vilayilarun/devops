@@ -19,11 +19,13 @@ COPY static /app/static
 EXPOSE 443
 
 # Run the application
-CMD ["python3", "./helloworld.py"]
+ENTRYPOINT [ "python3" ]
+CMD ["./helloworld.py"]
 
 # Build the final image
 FROM python:3.9-slim-buster
 COPY --from=build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 COPY --from=build /app /app/
 EXPOSE 443
-CMD ["python3", "/app/helloworld.py"]
+ENTRYPOINT [ "python3" ]
+CMD ["/app/helloworld.py"]
